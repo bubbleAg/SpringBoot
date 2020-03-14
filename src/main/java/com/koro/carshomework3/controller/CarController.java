@@ -16,9 +16,8 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(value = "/cars",
-        produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
-        )
+@RequestMapping(value = "/cars", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin
 public class CarController {
 
     private CarService carService;
@@ -58,12 +57,12 @@ public class CarController {
         return new ResponseEntity(carCollection, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity addCar(@RequestBody Car newCar) {
         if (carService.addCar(newCar)) {
             return new ResponseEntity(HttpStatus.CREATED);
         }
-        return new ResponseEntity(HttpStatus.CONFLICT);
+        return new ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @PutMapping
@@ -82,7 +81,7 @@ public class CarController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity removeCar(@PathVariable int id) {
         if(carService.removeCar(id)){
             return new ResponseEntity(HttpStatus.CREATED);
