@@ -21,9 +21,9 @@ public class CarServiceImpl implements CarService {
     }
 
     private void setDefaultCars() {
-        carList.add(new Car(1, "Audi", "A6", "black"));
-        carList.add(new Car(2, "Volkswagen", "Polo", "red"));
-        carList.add(new Car(3, "Skoda", "Superb", "red"));
+        carList.add(new Car(1L, "Audi", "A6", "black"));
+        carList.add(new Car(2L, "Volkswagen", "Polo", "red"));
+        carList.add(new Car(3L, "Skoda", "Superb", "red"));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Optional<Car> getCarById(int id) {
+    public Optional<Car> getCarById(long id) {
         Optional<Car> optionalCar = carList.stream().filter(car -> car.getId() == id).findFirst();
         return optionalCar;
     }
@@ -58,7 +58,7 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public void removeCar(int id) {
+    public void removeCar(long id) {
         Car foundCar = getCarById(id).orElseThrow(() -> new CarNotFoundException(id));
         carList.remove(foundCar);
     }

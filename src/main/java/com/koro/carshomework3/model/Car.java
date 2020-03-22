@@ -4,7 +4,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 public class Car extends RepresentationModel {
 
-    private int id;
+    private long id;
     private String mark;
     private String model;
     private String color;
@@ -12,7 +12,7 @@ public class Car extends RepresentationModel {
     public Car() {
     }
 
-    public Car(int id, String mark, String model, String color) {
+    public Car(long id, String mark, String model, String color) {
         this.id = id;
         this.mark = mark;
         this.model = model;
@@ -35,11 +35,11 @@ public class Car extends RepresentationModel {
         }
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

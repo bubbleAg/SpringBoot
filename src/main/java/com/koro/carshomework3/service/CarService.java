@@ -6,9 +6,9 @@ import java.util.Optional;
 
 public interface CarService {
     List<Car> getCarList();
-    Optional<Car> getCarById(int id);
+    Optional<Car> getCarById(long id);
     List<Car> getCarsByColor(String color);
     void addCar(Car car);
     void modifyCar(Car car);
-    void removeCar(int id);
+    void removeCar(long id);
 }
