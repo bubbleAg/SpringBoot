@@ -1,5 +1,6 @@
 package com.koro.carshomework3.controller;
 
+import com.koro.carshomework3.exception.CarNotFoundException;
 import com.koro.carshomework3.model.Car;
 import com.koro.carshomework3.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class CarController {
 
     @GetMapping
     public ResponseEntity<CollectionModel<Car>> getCars() {
-        List<Car> carList = carService.getCarsList();
+        List<Car> carList = carService.getCarList();
         carList.forEach(car -> car.add(linkTo(CarController.class).slash(car.getId()).withSelfRel()));
         Link link = linkTo(CarController.class).withSelfRel();
         CollectionModel<Car> carCollection = new CollectionModel<>(carList, link);
@@ -38,13 +39,10 @@ public class CarController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Car>> getCarById(@PathVariable int id) {
+        Car carById = carService.getCarById(id).orElseThrow(() -> new CarNotFoundException(id));
         Link link = linkTo(CarController.class).slash(id).withSelfRel();
-        Car carById = carService.getCarById(id);
         EntityModel<Car> carEntity = new EntityModel<>(carById, link);
-        if (carById != null) {
-            return new ResponseEntity<>(carEntity, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(carEntity, HttpStatus.OK);
     }
 
     @GetMapping("/color/{color}")
@@ -59,34 +57,20 @@ public class CarController {
 
     @PostMapping("/add")
     public ResponseEntity addCar(@RequestBody Car newCar) {
-        if (carService.addCar(newCar)) {
-            return new ResponseEntity(HttpStatus.CREATED);
-        }
-        return new ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-
-    @PutMapping
-    public ResponseEntity modifyWholeCar(@RequestBody Car newCar) {
-        if (carService.modifyWholeCar(newCar)) {
-            return new ResponseEntity(HttpStatus.OK);
-        }
-        return new ResponseEntity(HttpStatus.CONFLICT);
+        carService.addCar(newCar);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @PatchMapping
     public ResponseEntity modifyCar(@RequestBody Car newCar) {
-        if (carService.modifyCar(newCar)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        carService.modifyCar(newCar);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
     public ResponseEntity removeCar(@PathVariable int id) {
-        if(carService.removeCar(id)){
-            return new ResponseEntity(HttpStatus.CREATED);
-        }
-        return new ResponseEntity(HttpStatus.CONFLICT);
+        carService.removeCar(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

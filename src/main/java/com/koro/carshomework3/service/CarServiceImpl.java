@@ -1,5 +1,7 @@
 package com.koro.carshomework3.service;
 
+import com.koro.carshomework3.exception.CarAlreadyExistsException;
+import com.koro.carshomework3.exception.CarNotFoundException;
 import com.koro.carshomework3.model.Car;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +27,14 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> getCarsList() {
+    public List<Car> getCarList() {
         return carList;
     }
 
     @Override
-    public Car getCarById(int id) {
+    public Optional<Car> getCarById(int id) {
         Optional<Car> optionalCar = carList.stream().filter(car -> car.getId() == id).findFirst();
-        if (optionalCar.isPresent()) {
-            return optionalCar.get();
-        }
-        return null;
+        return optionalCar;
     }
 
     @Override
@@ -44,43 +43,23 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public boolean addCar(Car car) {
-        if (getCarById(car.getId()) != null) {
-            return false;
-        }
+    public void addCar(Car car) {
+        getCarById(car.getId()).ifPresent(c -> {
+            throw new CarAlreadyExistsException(car.getId());
+        });
         carList.add(car);
-        return true;
     }
 
     @Override
-    public boolean modifyWholeCar(Car newCar) {
-        Car foundCar = getCarById(newCar.getId());
-        if (foundCar != null) {
-            carList.remove(foundCar);
-            carList.add(newCar);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean modifyCar(Car newCar) {
-        Car foundCar = getCarById(newCar.getId());
-        if (foundCar != null) {
-            foundCar.modifyCar(newCar);
-            return true;
-        }
-        return false;
+    public void modifyCar(Car newCar) {
+        Car foundCar = getCarById(newCar.getId()).orElseThrow(() -> new CarNotFoundException(newCar.getId()));
+        foundCar.modifyCar(newCar);
     }
 
 
     @Override
-    public boolean removeCar(int id) {
-        Car foundCar = getCarById(id);
-        if (foundCar != null) {
-            carList.remove(foundCar);
-            return true;
-        }
-        return false;
+    public void removeCar(int id) {
+        Car foundCar = getCarById(id).orElseThrow(() -> new CarNotFoundException(id));
+        carList.remove(foundCar);
     }
 }
