@@ -21,9 +21,9 @@ public class CarServiceImpl implements CarService {
     }
 
     private void setDefaultCars() {
-        carList.add(new Car(1L, "Audi", "A6", "black"));
-        carList.add(new Car(2L, "Volkswagen", "Polo", "red"));
-        carList.add(new Car(3L, "Skoda", "Superb", "red"));
+//        carList.add(new Car(1L, "Audi", "A6", "black"));
+//        carList.add(new Car(2L, "Volkswagen", "Polo", "red"));
+//        carList.add(new Car(3L, "Skoda", "Superb", "red"));
     }
 
     @Override
